@@ -8,12 +8,10 @@ public class CharacterAiming : MonoBehaviour
     [SerializeField] private Rig _aimLayer;
     
     private Camera _mainCamera;
-    private RaycastWeapon _raycastWeapon;
 
     private void Start()
     {
         _mainCamera = Camera.main;
-        _raycastWeapon = GetComponentInChildren<RaycastWeapon>();
         Cursor.visible = false;
         Cursor.lockState = CursorLockMode.Locked;
     }
@@ -28,19 +26,15 @@ public class CharacterAiming : MonoBehaviour
     {
         if (_aimLayer)
         {
-            if (Input.GetButton("Fire2"))
-            {
-                _aimLayer.weight += Time.deltaTime / _aimDuration;
-            }
-            else
-            {
-                _aimLayer.weight -= Time.deltaTime / _aimDuration;
-            }
+            // if (Input.GetButton("Fire2"))
+            // {
+            //     _aimLayer.weight += Time.deltaTime / _aimDuration;
+            // }
+            // else
+            // {
+            //     _aimLayer.weight -= Time.deltaTime / _aimDuration;
+            // }
+            _aimLayer.weight = 1f;
         }
-
-        if (Input.GetButtonDown("Fire1")) _raycastWeapon.StartFiring();
-        if (_raycastWeapon.IsFiring) _raycastWeapon.UpdateFiring(Time.deltaTime);
-        _raycastWeapon.UpdateBullet(Time.deltaTime);
-        if (Input.GetButtonUp("Fire1")) _raycastWeapon.StopFiring();
     }
 }
