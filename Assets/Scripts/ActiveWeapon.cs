@@ -1,28 +1,17 @@
 using UnityEngine;
-using UnityEngine.Animations.Rigging;
-
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEditor.Animations;
-#endif
 
 public class ActiveWeapon : MonoBehaviour
 {
     [SerializeField] private Transform _crossHairTarget;
-    [SerializeField] private Rig _handIk;
     [SerializeField] private Transform _weaponParent;
     [SerializeField] private Transform _weaponLeftGrip;
     [SerializeField] private Transform _weaponRightGrip;
+    [SerializeField] private Animator _rigController;
     
     private RaycastWeapon _raycastWeapon;
-    private Animator _animator;
-    private AnimatorOverrideController _animatorOverrideController;
 
     private void Start()
     {
-        _animator = GetComponent<Animator>();
-        _animatorOverrideController = _animator.runtimeAnimatorController as AnimatorOverrideController;
-        
         var existingWeapon = GetComponentInChildren<RaycastWeapon>();
         if (existingWeapon)
         {
@@ -38,11 +27,12 @@ public class ActiveWeapon : MonoBehaviour
             if (_raycastWeapon.IsFiring) _raycastWeapon.UpdateFiring(Time.deltaTime);
             _raycastWeapon.UpdateBullet(Time.deltaTime);
             if (Input.GetButtonUp("Fire1")) _raycastWeapon.StopFiring();
-        }
-        else
-        {
-            _handIk.weight = 0f;
-            _animator.SetLayerWeight(1, 0f);
+
+            if (Input.GetKeyDown(KeyCode.X))
+            {
+                var isHolstered = _rigController.GetBool("Holster_Weapon");
+                _rigController.SetBool("Holster_Weapon", !isHolstered);
+            }
         }
     }
 
@@ -59,28 +49,6 @@ public class ActiveWeapon : MonoBehaviour
         _raycastWeapon.transform.localPosition = Vector3.zero;
         _raycastWeapon.transform.localRotation = Quaternion.identity;
         
-        _handIk.weight = 1f;
-        _animator.SetLayerWeight(1, 1f);
-
-        Invoke(nameof(SetAnimationDelayed), 0.001f);
+        _rigController.Play($"Equip_{_raycastWeapon.WeaponName}");
     }
-
-    private void SetAnimationDelayed()
-    {
-        _animatorOverrideController["Weapon_Anim_Empty"] = _raycastWeapon.WeaponAnimation;
-    }
-    
-#if UNITY_EDITOR
-    [ContextMenu("Save Weapon Pose")]
-    private void SaveWeaponPose()
-    {
-        var recorder = new GameObjectRecorder(gameObject);
-        recorder.BindComponentsOfType<Transform>(_weaponParent.gameObject, false);
-        recorder.BindComponentsOfType<Transform>(_weaponLeftGrip.gameObject, false);
-        recorder.BindComponentsOfType<Transform>(_weaponRightGrip.gameObject, false);
-        recorder.TakeSnapshot(0f);
-        recorder.SaveToClip(_raycastWeapon.WeaponAnimation);
-        AssetDatabase.SaveAssets();
-    }
-#endif
 }

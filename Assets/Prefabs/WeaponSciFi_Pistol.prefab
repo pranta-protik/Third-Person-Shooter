@@ -19125,7 +19125,7 @@ MonoBehaviour:
   _hitEffect: {fileID: 226866290109108919}
   _tracerEffect: {fileID: 7348524755165499019, guid: 3d6d5726ddf302f459c1f3a1fcfcef90,
     type: 3}
-  _weaponAnimation: {fileID: 7400000, guid: e6b2105b434513540b8a08e09bc6ef67, type: 2}
+  _weaponName: Pistol
   _raycastOrigin: {fileID: 2649967364934566906}
   _rayCastDestination: {fileID: 0}
 --- !u!1 &2649967364934566901

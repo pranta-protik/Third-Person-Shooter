@@ -17,7 +17,7 @@ public class RaycastWeapon : MonoBehaviour
     [SerializeField] private ParticleSystem _muzzleFlash;
     [SerializeField] private ParticleSystem _hitEffect;
     [SerializeField] private TrailRenderer _tracerEffect;
-    [SerializeField] private AnimationClip _weaponAnimation;
+    [SerializeField] private string _weaponName;
     [SerializeField] private Transform _raycastOrigin;
     [SerializeField] private Transform _rayCastDestination;
     
@@ -35,11 +35,7 @@ public class RaycastWeapon : MonoBehaviour
         set => _rayCastDestination = value;
     }
 
-    public AnimationClip WeaponAnimation
-    {
-        get => _weaponAnimation;
-        set => _weaponAnimation = value;
-    }
+    public string WeaponName => _weaponName;
 
     private Vector3 GetPosition(Bullet bullet)
     {
