@@ -2,13 +2,18 @@ using UnityEngine;
 
 public class ActiveWeapon : MonoBehaviour
 {
-    [SerializeField] private Transform _crossHairTarget;
-    [SerializeField] private Transform _weaponParent;
-    [SerializeField] private Transform _weaponLeftGrip;
-    [SerializeField] private Transform _weaponRightGrip;
-    [SerializeField] private Animator _rigController;
+    public enum WeaponSlot
+    {
+        Primary = 0,
+        Secondary = 1
+    }
     
-    private RaycastWeapon _raycastWeapon;
+    [SerializeField] private Transform _crossHairTarget;
+    [SerializeField] private Transform[] _weaponSlots;
+    [SerializeField] private Animator _rigController;
+
+    private RaycastWeapon[] _equipped_weapons = new RaycastWeapon[2];
+    private int _activeWeaponIndex;
 
     private void Start()
     {
@@ -19,14 +24,21 @@ public class ActiveWeapon : MonoBehaviour
         }
     }
 
+    private RaycastWeapon GetWeapon(int index)
+    {
+        if (index < 0 || index >= _equipped_weapons.Length) return null;
+        return _equipped_weapons[index];
+    }
+
     private void Update()
     {
-        if (_raycastWeapon)
+        var weapon = GetWeapon(_activeWeaponIndex);
+        if (weapon)
         {
-            if (Input.GetButtonDown("Fire1")) _raycastWeapon.StartFiring();
-            if (_raycastWeapon.IsFiring) _raycastWeapon.UpdateFiring(Time.deltaTime);
-            _raycastWeapon.UpdateBullet(Time.deltaTime);
-            if (Input.GetButtonUp("Fire1")) _raycastWeapon.StopFiring();
+            if (Input.GetButtonDown("Fire1")) weapon.StartFiring();
+            if (weapon.IsFiring) weapon.UpdateFiring(Time.deltaTime);
+            weapon.UpdateBullet(Time.deltaTime);
+            if (Input.GetButtonUp("Fire1")) weapon.StopFiring();
 
             if (Input.GetKeyDown(KeyCode.X))
             {
@@ -38,17 +50,23 @@ public class ActiveWeapon : MonoBehaviour
 
     public void Equip(RaycastWeapon newWeapon)
     {
-        if (_raycastWeapon)
+        var weaponSlotIndex = (int)newWeapon.WeaponSlot;
+        var weapon = GetWeapon(weaponSlotIndex);
+        
+        if (weapon)
         {
-            Destroy(_raycastWeapon.gameObject);
+            Destroy(weapon.gameObject);
         }
         
-        _raycastWeapon = newWeapon;
-        _raycastWeapon.RayCastDestination = _crossHairTarget;
-        _raycastWeapon.transform.parent = _weaponParent;
-        _raycastWeapon.transform.localPosition = Vector3.zero;
-        _raycastWeapon.transform.localRotation = Quaternion.identity;
+        weapon = newWeapon;
+        weapon.RayCastDestination = _crossHairTarget;
+        weapon.transform.parent = _weaponSlots[weaponSlotIndex];
+        weapon.transform.localPosition = Vector3.zero;
+        weapon.transform.localRotation = Quaternion.identity;
         
-        _rigController.Play($"Equip_{_raycastWeapon.WeaponName}");
+        _rigController.Play($"Equip_{weapon.WeaponName}");
+
+        _equipped_weapons[weaponSlotIndex] = weapon;
+        _activeWeaponIndex = weaponSlotIndex;
     }
 }

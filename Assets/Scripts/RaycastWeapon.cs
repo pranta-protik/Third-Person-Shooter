@@ -10,7 +10,8 @@ public class RaycastWeapon : MonoBehaviour
         public Vector3 initialVelocity;
         public TrailRenderer tracer;
     }
-    
+
+    [SerializeField] private ActiveWeapon.WeaponSlot _weaponSlot;
     [SerializeField] private int _fireRate = 25;
     [SerializeField] private float _bulletSpeed = 1000f;
     [SerializeField] private float _bulletDrop;
@@ -28,6 +29,7 @@ public class RaycastWeapon : MonoBehaviour
     private float _maxLifeTime = 3f;
     private bool _isFiring;
 
+    public ActiveWeapon.WeaponSlot WeaponSlot => _weaponSlot;
     public bool IsFiring => _isFiring;
     public Transform RayCastDestination
     {

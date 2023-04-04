@@ -19118,6 +19118,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3b9fc41e4c9bee4eb6a1bb56c8bce85, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _weaponSlot: 1
   _fireRate: 25
   _bulletSpeed: 1000
   _bulletDrop: 0
