@@ -3,8 +3,7 @@ using UnityEngine;
 public class CharacterAiming : MonoBehaviour
 {
     [SerializeField] private float _turnSpeed = 15f;
-    [SerializeField] private float _aimDuration = 0.3f;
-    
+
     private Camera _mainCamera;
 
     private void Start()
